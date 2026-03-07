@@ -30,11 +30,15 @@ app = FastAPI(
 # CORS 配置
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 注册路由
+from routes import router as api_router
+app.include_router(api_router, prefix="/api")
 
 # ==================== 数据模型 ====================
 
