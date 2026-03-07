@@ -14,9 +14,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import uvicorn
 
-# 环境变量
-DEEPSEEK_KEY = os.getenv("DEEPSEEK_KEY", "")
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./zhixue.db")
+# 导入配置和模型
+from config import settings
+from models import init_db, get_session, Question as QuestionModel, LearningStats
+
+# 初始化数据库
+engine = init_db()
 
 app = FastAPI(
     title="智学伴侣 API",
