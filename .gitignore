@@ -19,6 +19,7 @@ env/
 *.db
 *.sqlite
 *.sqlite3
+!*.sqlite  # 保留示例数据库
 
 # 环境配置
 .env
@@ -41,3 +42,6 @@ Thumbs.db
 tmp/
 temp/
 *.tmp
+
+# 上传文件
+uploads/
