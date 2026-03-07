@@ -125,16 +125,27 @@ async def get_question(question_id: int):
 @app.post("/api/questions/{question_id}/analyze")
 async def analyze_question(question_id: int):
     """AI 分析题目（调用 DeepSeek API）"""
-    # MVP 版本：返回模拟数据
-    # 实际应调用 DeepSeek API 进行分析
+    from services import deepseek_service
+    
+    # 获取题目
+    question = None
+    for q in questions_db:
+        if q["id"] == question_id:
+            question = q
+            break
+    
+    if not question:
+        raise HTTPException(status_code=404, detail="题目不存在")
+    
+    # 调用 AI 分析
+    analysis = await deepseek_service.analyze_question(question["content"])
+    similar = await deepseek_service.generate_similar_questions(question["content"], 3)
+    
     return QuestionAnalysis(
-        knowledge_point="二次函数最值问题",
-        solution_idea="使用配方法或求导法找到函数最值",
-        common_mistakes="符号处理错误、配方不完整",
-        similar_questions=[
-            "已知 f(x) = x² - 4x + 3，求最小值",
-            "求函数 y = -x² + 2x + 1 的最大值"
-        ]
+        knowledge_point=analysis.get("knowledge_point", "通用知识点"),
+        solution_idea=analysis.get("solution_idea", "分析题目条件求解"),
+        common_mistakes=analysis.get("common_mistakes", "注意审题"),
+        similar_questions=similar
     )
 
 @app.put("/api/questions/{question_id}/mastery")
@@ -151,12 +162,19 @@ async def update_mastery(question_id: int, mastery: str):
 @app.post("/api/upload")
 async def upload_question(file: UploadFile = File(...)):
     """上传题目图片（OCR 识别）"""
-    # MVP 版本：返回模拟数据
-    # 实际应调用 OCR API 识别图片文字
+    from services import ocr_service
+    
+    # 读取图片数据
+    image_data = await file.read()
+    
+    # OCR 识别
+    text = await ocr_service.recognize_text(image_data)
+    
     return {
         "success": True,
-        "message": "图片上传成功，正在识别...",
-        "filename": file.filename
+        "message": "图片上传成功，识别完成",
+        "filename": file.filename,
+        "ocr_result": text
     }
 
 @app.get("/api/recommend")
