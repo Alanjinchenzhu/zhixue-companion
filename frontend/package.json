@@ -1,0 +1,23 @@
+{
+  "name": "zhixue-companion-frontend",
+  "version": "1.0.0",
+  "description": "智学伴侣 - UniApp 前端",
+  "main": "main.js",
+  "scripts": {
+    "dev:h5": "uni -p h5",
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "build:h5": "uni build -p h5",
+    "build:mp-weixin": "uni build -p mp-weixin"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "^3.0.0",
+    "vue": "^3.2.47",
+    "pinia": "^2.0.36",
+    "uview-ui": "^2.0.36"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-cli-shared": "^3.0.0",
+    "@dcloudio/vite-plugin-uni": "^3.0.0",
+    "vite": "^4.0.0"
+  }
+}
