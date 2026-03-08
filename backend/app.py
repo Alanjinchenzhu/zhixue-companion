@@ -193,6 +193,8 @@ async def recommend_questions(question_id: int, limit: int = 5):
 # ==================== 主程序 ====================
 
 if __name__ == "__main__":
+    from models import DATABASE_URL
+    
     print("=" * 50)
     print("📚 智学伴侣 - 后端服务")
     print("=" * 50)
