@@ -19,9 +19,14 @@
     <!-- 学习趋势 -->
     <view class="section card">
       <view class="section-title">学习趋势</view>
-      <view class="chart-placeholder">
-        <text class="chart-icon">📊</text>
-        <text class="chart-hint">图表开发中</text>
+      <view class="chart-container">
+        <view class="chart-bar" v-for="(day, index) in weekData" :key="index">
+          <view class="bar-label">{{ day.label }}</view>
+          <view class="bar-wrapper">
+            <view class="bar" :style="{ height: day.value * 2 + 'rpx' }"></view>
+          </view>
+          <view class="bar-value">{{ day.value }}</view>
+        </view>
       </view>
     </view>
 
@@ -80,7 +85,16 @@ export default {
     return {
       learningDays: 7,
       totalQuestions: 23,
-      accuracyRate: 85
+      accuracyRate: 85,
+      weekData: [
+        { label: '一', value: 5 },
+        { label: '二', value: 8 },
+        { label: '三', value: 3 },
+        { label: '四', value: 12 },
+        { label: '五', value: 7 },
+        { label: '六', value: 10 },
+        { label: '日', value: 6 }
+      ]
     }
   },
   onLoad() {
@@ -162,6 +176,52 @@ export default {
   .chart-hint {
     font-size: 24rpx;
     color: #999;
+  }
+}
+
+.chart-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 40rpx 20rpx;
+  height: 300rpx;
+  
+  .chart-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    
+    .bar-label {
+      font-size: 24rpx;
+      color: #666;
+      margin-bottom: 10rpx;
+    }
+    
+    .bar-wrapper {
+      width: 40rpx;
+      height: 200rpx;
+      background: #F0F0F0;
+      border-radius: 8rpx;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 4rpx;
+      
+      .bar {
+        width: 100%;
+        background: linear-gradient(180deg, #2196F3, #64B5F6);
+        border-radius: 8rpx;
+        transition: height 0.3s ease;
+      }
+    }
+    
+    .bar-value {
+      font-size: 24rpx;
+      color: #2196F3;
+      font-weight: 600;
+      margin-top: 10rpx;
+    }
   }
 }
 

@@ -60,6 +60,19 @@
       </view>
     </view>
 
+    <!-- 搜索框 -->
+    <view class="section card">
+      <view class="search-box">
+        <input 
+          class="search-input" 
+          v-model="searchKeyword" 
+          placeholder="搜索题目、知识点..."
+          @confirm="searchQuestions"
+        />
+        <button class="search-btn" @click="searchQuestions">🔍 搜索</button>
+      </view>
+    </view>
+
     <!-- 最近错题 -->
     <view class="section card">
       <view class="section-header">
@@ -87,11 +100,13 @@ export default {
       totalQuestions: 23,
       masteredQuestions: 15,
       accuracyRate: 85,
+      searchKeyword: '',
       recentQuestions: [
         { id: 1, subject: 'math', title: '二次函数最值问题', date: '2026-03-07' },
         { id: 2, subject: 'english', title: '英语时态练习', date: '2026-03-06' },
         { id: 3, subject: 'math', title: '一次函数应用题', date: '2026-03-05' }
-      ]
+      ],
+      searchResults: []
     }
   },
   onLoad() {
@@ -140,6 +155,52 @@ export default {
       uni.navigateTo({
         url: `/pages/question/question?id=${item.id}`
       })
+    },
+    async searchQuestions() {
+      if (!this.searchKeyword.trim()) {
+        uni.showToast({
+          title: '请输入搜索内容',
+          icon: 'none'
+        })
+        return
+      }
+      
+      uni.showLoading({
+        title: '搜索中...'
+      })
+      
+      try {
+        const res = await uni.request({
+          url: 'http://localhost:8000/api/questions',
+          method: 'GET',
+          data: {
+            keyword: this.searchKeyword,
+            limit: 20
+          }
+        })
+        
+        if (res.statusCode === 200) {
+          this.searchResults = res.data
+          if (this.searchResults.length === 0) {
+            uni.showToast({
+              title: '未找到相关题目',
+              icon: 'none'
+            })
+          } else {
+            uni.navigateTo({
+              url: `/pages/search/search?keyword=${this.searchKeyword}`
+            })
+          }
+        }
+      } catch (e) {
+        console.log('搜索失败', e)
+        uni.showToast({
+          title: '搜索失败，请重试',
+          icon: 'none'
+        })
+      } finally {
+        uni.hideLoading()
+      }
     }
   }
 }
@@ -215,6 +276,34 @@ export default {
 }
 
 .section {
+  .search-box {
+    display: flex;
+    align-items: center;
+    padding: 20rpx 0;
+    
+    .search-input {
+      flex: 1;
+      height: 72rpx;
+      padding: 0 24rpx;
+      background: #F5F7FA;
+      border-radius: 36rpx;
+      font-size: 28rpx;
+      color: #333;
+    }
+    
+    .search-btn {
+      margin-left: 20rpx;
+      padding: 0 32rpx;
+      height: 72rpx;
+      line-height: 72rpx;
+      background: linear-gradient(90deg, #2196F3, #1E88E5);
+      color: #FFF;
+      border-radius: 36rpx;
+      font-size: 28rpx;
+      border: none;
+    }
+  }
+  
   .section-header {
     display: flex;
     justify-content: space-between;
